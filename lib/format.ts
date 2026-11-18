@@ -101,3 +101,30 @@ export function ballTone(label: string, ball?: Rec): "wicket" | "six" | "four" |
   if (l === "0" || l === "•" || l === "") return "dot";
   return "run";
 }
+
+export const NEWS_CATEGORIES = ["general", "match-report", "analysis", "preview", "tournament", "transfers", "rules", "venues", "interview"];
+
+export function categoryLabel(c: string) {
+  return String(c || "").replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+export function timeAgo(iso?: string) {
+  if (!iso) return "";
+  const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1) return "Just now";
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return d < 7 ? `${d}d ago` : formatDate(iso, true);
+}
+
+/** Plain-text article body -> blocks. Blank line = paragraph, "## " prefix = heading. Rendered as text (never HTML). */
+export function parseBody(body: string): { type: "h" | "p"; text: string }[] {
+  return String(body || "")
+    .replace(/\r\n/g, "\n")
+    .split(/\n{2,}/)
+    .map((b) => b.trim())
+    .filter(Boolean)
+    .map((b) => (b.startsWith("## ") ? { type: "h" as const, text: b.slice(3).trim() } : { type: "p" as const, text: b }));
+}

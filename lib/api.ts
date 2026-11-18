@@ -18,6 +18,7 @@ interface Options {
   /** seconds to cache on the server (Next data cache). 0 = no cache */
   revalidate?: number;
   signal?: AbortSignal;
+  method?: "GET" | "POST";
 }
 
 function buildUrl(path: string, query?: Query) {
@@ -31,12 +32,14 @@ function buildUrl(path: string, query?: Query) {
 
 /** Fetches `/app/*` public endpoints and returns the backend `data` envelope. */
 export async function api<T = Rec>(path: string, opts: Options = {}): Promise<T> {
-  const { query, revalidate = 0, signal } = opts;
+  const { query, revalidate = 0, signal, method = "GET" } = opts;
   let res: Response;
   try {
     res = await fetch(buildUrl(path, query), {
       signal,
-      headers: { Accept: "application/json" },
+      method,
+      headers: { Accept: "application/json", ...(method === "POST" ? { "Content-Type": "application/json" } : {}) },
+      ...(method === "POST" ? { body: "{}" } : {}),
       ...(typeof window === "undefined"
         ? revalidate > 0
           ? { next: { revalidate } }
@@ -53,7 +56,7 @@ export async function api<T = Rec>(path: string, opts: Options = {}): Promise<T>
     /* non-JSON error body */
   }
   if (!res.ok || json?.status === false) {
-    throw new ApiError(json?.userMessage || json?.message || `Request failed (${res.status})`, res.status);
+    throw new ApiError(json?.userMessage || json?.message || `Request failed (${res.status})`, Number(json?.statusCode) || res.status);
   }
   return (json?.data ?? json) as T;
 }

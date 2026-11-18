@@ -8,7 +8,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: { default: "Cricket Liveline — Live scores, scorecards & commentary", template: "%s · Cricket Liveline" },
+  title: { default: "Cricket Pulse — Live scores, scorecards & commentary", template: "%s · Cricket Pulse" },
   description: "Ball-by-ball live cricket scores, full scorecards, commentary, series fixtures, points tables and ICC rankings.",
 };
 
@@ -16,8 +16,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#0b2a4a" },
-    { media: "(prefers-color-scheme: dark)", color: "#0d1b30" },
+    { media: "(prefers-color-scheme: light)", color: "#0284c7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
   ],
 };
 

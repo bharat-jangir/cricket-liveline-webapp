@@ -2,15 +2,21 @@
 
 Next.js 16 (App Router) + Tailwind 4. Server-renders match lists, then streams live updates over Socket.IO.
 
-## Pages
+## Pages (same flow as the mobile app)
 | Route | What it shows |
 |---|---|
-| `/` | Live / Upcoming / Results tabs, format filter, featured series. Scores patch in live via the listing socket |
-| `/match/[id]` | Scoreboard header + Live, Scorecard, Commentary, Squads, Info tabs (all realtime) |
-| `/series`, `/series/[id]` | Series by status, fixtures, points table |
-| `/rankings` | Team / batting / bowling / all-rounder rankings, men/women, Test/ODI/T20I |
+| `/` | Featured-series hero, quick links, **live now** (realtime), upcoming, recent results |
+| `/matches` | Live / Upcoming / Recent tabs with format filter (`?tab=`) |
+| `/fixtures` | Upcoming or past matches grouped by date, with "load more" |
+| `/match/[id]` | Scoreboard + Live, Scorecard, Commentary, Squads, Points table, Info (all realtime) |
+| `/series`, `/series/[id]` | Series by status; tabs: Overview, Fixtures, Teams (+squads), Stats (leaders), Venues, Points table |
+| `/rankings` | Teams / batting / bowling / all-rounders, men/women, Test/ODI/T20 |
+| `/venues`, `/venues/[id]` | Searchable grounds, venue records |
+| `/players`, `/players/[id]` | Searchable players, role filter, career stats by format |
+| `/search?q=` | Matches, series, players, venues |
 
-Formats are handled natively: The Hundred shows ball counts and "sets", others show overs.
+Theme tokens mirror the mobile app (`src/theme/index.ts`): same sky/blue palette in light and dark.
+News and Shorts are managed from the admin panel (News / Shorts).
 
 ## Run
 ```bash

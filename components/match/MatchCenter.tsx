@@ -12,9 +12,17 @@ import { LiveTab } from "./LiveTab";
 import { InningScorecard } from "./Scorecard";
 import { CommentaryTab } from "./CommentaryTab";
 import { SquadsTab } from "./SquadsTab";
+import { PointsTable } from "../PointsTable";
+import { useRemote } from "./hooks";
 import { InfoTab } from "./InfoTab";
 
-type TabKey = "live" | "scorecard" | "commentary" | "squads" | "info";
+type TabKey = "live" | "scorecard" | "commentary" | "squads" | "points" | "info";
+
+function MatchPoints({ seriesId }: { seriesId: string }) {
+  const { data, loading } = useRemote<Rec[]>(`/app/series/${seriesId}/points-table`);
+  if (loading) return <p className="text-sm text-muted">Loading…</p>;
+  return <PointsTable entries={Array.isArray(data) ? data : []} />;
+}
 
 export function MatchCenter({ initialMatch, initialLive }: { initialMatch: Rec; initialLive: Rec | null }) {
   const matchId = idOf(initialMatch);
@@ -96,6 +104,7 @@ export function MatchCenter({ initialMatch, initialLive }: { initialMatch: Rec; 
     { value: "scorecard", label: "Scorecard" },
     { value: "commentary", label: "Commentary" },
     { value: "squads", label: "Squads" },
+    ...(match.seriesId?.hasPoints ? [{ value: "points" as TabKey, label: "Points table" }] : []),
     { value: "info", label: "Info" },
   ];
 
@@ -138,6 +147,7 @@ export function MatchCenter({ initialMatch, initialLive }: { initialMatch: Rec; 
 
         {tab === "commentary" && <CommentaryTab matchId={matchId} refreshKey={tick} resetKey={resetKey} hundred={hundred} />}
         {tab === "squads" && <SquadsTab matchId={matchId} />}
+        {tab === "points" && <MatchPoints seriesId={idOf(match.seriesId)} />}
         {tab === "info" && <InfoTab match={match} liveStatus={live} />}
       </TabPanel>
     </div>

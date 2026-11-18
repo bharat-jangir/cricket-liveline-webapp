@@ -41,9 +41,9 @@ async function loadAll(): Promise<HomeData> {
   return { live: live || [], upcoming: upcoming || [], results: results || [] };
 }
 
-export function HomeMatches({ initial, failed }: { initial: HomeData; failed?: boolean }) {
+export function HomeMatches({ initial, failed, initialTab }: { initial: HomeData; failed?: boolean; initialTab?: Bucket }) {
   const [data, setData] = useState<HomeData>(initial);
-  const [tab, setTab] = useState<Bucket>(initial.live.length ? "live" : initial.upcoming.length ? "upcoming" : "results");
+  const [tab, setTab] = useState<Bucket>(initialTab ?? (initial.live.length ? "live" : initial.upcoming.length ? "upcoming" : "results"));
   const [format, setFormat] = useState("ALL");
   const [stale, setStale] = useState(!!failed);
   const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -119,7 +119,7 @@ export function HomeMatches({ initial, failed }: { initial: HomeData; failed?: b
         tabs={[
           { value: "live", label: "Live", badge: filtered.live.length > 0 ? <span className="rounded-full bg-live px-1.5 text-[11px] font-semibold text-white">{filtered.live.length}</span> : undefined },
           { value: "upcoming", label: "Upcoming" },
-          { value: "results", label: "Results" },
+          { value: "results", label: "Recent" },
         ]}
       />
       <div className="mt-4">
@@ -129,7 +129,7 @@ export function HomeMatches({ initial, failed }: { initial: HomeData; failed?: b
         {list.length === 0 ? (
           <EmptyState {...empty} />
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {list.map((m) => (
               <MatchCard key={m.id} match={m} />
             ))}
